@@ -1,0 +1,57 @@
+#include "ConnectionHandler.h"
+#include <cassert>
+#include <sys/socket.h>
+#include <iostream>
+#include <pthread.h>
+
+ConnectionHandler::ConnectionHandler(int fd) : fd(fd) {
+    assert(!this->m_thread.joinable());
+
+    // creating thread that handles received messages
+    this->m_thread = std::thread([this]() { this->threadFunc(); });
+    pthread_setname_np(this->m_thread.native_handle(), "ConnectionHandler");
+}
+
+ConnectionHandler::~ConnectionHandler() {
+    this->stop();
+}
+
+void ConnectionHandler::stop() {
+    if (this->m_thread.joinable()) {
+        this->m_thread.join();
+    }
+}
+
+void ConnectionHandler::threadFunc() {
+    while (!this->m_terminate) {
+        std::string msg = this->readMessage();
+        std::cout << "Received message: " << msg << std::endl;
+        this->sendMessage("Thank you for your message " + msg);
+    }
+}
+
+std::string ConnectionHandler::readMessage() const {
+    std::string msg(1024, '\0');    // buffor with 1024 length which is filled with NULL character
+
+    ssize_t readBytes = recv(this->fd, msg.data(), msg.size(), 0);
+    if (readBytes < 1) {
+        std::cout << "Error in readMessage, readBytes: " << readBytes << std::endl;
+        return "";
+    }
+
+    return msg;
+}
+
+
+void ConnectionHandler::sendMessage(const std::string &msg) const {
+    ssize_t n = send(this->fd, msg.c_str(), msg.size(), 0);
+    if (n != static_cast<int>(msg.size())) {
+        std::cout << "Error while sending message, message size: " << msg.size() << " bytes sent: " << std::endl;
+    }
+}
+
+
+void ConnectionHandler::terminate() {
+    this->m_terminate = true;
+}
+
