@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>snake.jpg</file>
+        <file>bg.jpg</file>
+        <file>menu_back.jpg</file>
+        <file>icon.png</file>
+        <file>butterfly-insect.gif</file>
+        <file>menu.mp3</file>
+        <file>i.png</file>
+        <file>table.jpg</file>
+        <file>table2.jpg</file>
+        <file>splashscreen.mp4</file>
+        <file>videoplayback.m4a</file>
+        <file>dictor.mp3</file>
+        <file>splashscreennew.mp4</file>
+        <file>videoplayback (1).m4a</file>
+        <file>Basic_Snake/release/MyGame.exe</file>
+        <file>les-ruchey-svet-derevya.jpg</file>
+        <file>playerinfo.jpg</file>
+    </qresource>
+</RCC>
